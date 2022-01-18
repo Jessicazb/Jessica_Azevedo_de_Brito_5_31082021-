@@ -1,7 +1,7 @@
- //gestion de l'url
-let queryString = window.location.search;
-let urlParams = new URLSearchParams(queryString);
-let sid = urlParams.get('id');
+  //gestion de l'url
+  let queryString = window.location.search;
+  let urlParams = new URLSearchParams(queryString);
+  let sid = urlParams.get('id');
 
 let cardsFetch = function () {
     fetch("http://localhost:3000/api/products/"+sid)
@@ -9,6 +9,7 @@ let cardsFetch = function () {
     .then((product) => {
   
     console.log(product);
+
 
    // ajout des cards sur la page produit 
     document.getElementsByClassName("item__img")[0].innerHTML = 
@@ -37,10 +38,10 @@ let cardsFetch = function () {
 
  //fonction pour la gestion du panier en local storage
     function ItemPanier(productId, quantity, color){
-    if(!localStorage.getItem("panier")){
-        localStorage.setItem("panier",[]);
+    if(!localStorage.getItem("item")){
+        localStorage.setItem("item",[]);
     }
-    let panier= localStorage.getItem("panier");
+    let panier= localStorage.getItem("item");
 //vérifie l'id de l'url pour enregistré le bon produit avec le bonne id (Gerer la quantité)
     if(quantity=>1){
     let quantityColor= false
@@ -59,7 +60,7 @@ let cardsFetch = function () {
   }
     }
      }
-      localStorage.setItem("panier",panier);
+      localStorage.setItem("item",panier);
     }
 
     //envoie les différentes couleurs des canapés
@@ -71,6 +72,7 @@ let cardsFetch = function () {
       // buton au clic redirectionne à la pag panier 
        document.getElementById("addToCart").addEventListener("click", event=>{
         ItemPanier(product._id, document.getElementById("quantity").value, document.getElementById("colors").value);
+        window.location = "./cart.html"
       });
       
     }else{
