@@ -1,10 +1,18 @@
+  //parametrage pour le local storage
+Storage.prototype.setObj = function(key, obj) {
+    return this.setItem(key, JSON.stringify(obj))
+  } 
+  Storage.prototype.getObj = function(key) {
+    return JSON.parse(this.getItem(key))
+  }
+  
   //gestion de l'url
   let queryString = window.location.search;
   let urlParams = new URLSearchParams(queryString);
-  let sid = urlParams.get('id');
+  let productId = urlParams.get('id');
 
 let cardsFetch = function () {
-    fetch("http://localhost:3000/api/products/"+sid)
+    fetch("http://localhost:3000/api/products/"+productId)
     .then((response) => response.json())
     .then((product) => {
   
@@ -14,34 +22,17 @@ let cardsFetch = function () {
    // ajout des cards sur la page produit 
     document.getElementsByClassName("item__img")[0].innerHTML = 
     '<img src="'+product.imageUrl+'" alt="Photographie d\'un canapé">';
-
-    function detailsProduits(y, z){
-    document.getElementById(y).innerHTML+= z;
-    };
-    detailsProduits ("title", product.name);
-    detailsProduits("price", product.price);
-    detailsProduits ("description", product.description);
+    document.getElementById("title").innerHTML = product.name;
+    document.getElementById("price").innerHTML = product.price;
+    document.getElementById("description").innerHTML = product.description;
     
- // Gestion des éléments dans le local storage 
-    function saveItem(item){
-    localStorage.setItem("item",JSON.stringify(item));
- }
-// recuperation des données des éléments  
-   function getItem(){
-   let item = localStorage.getItem("item");
-   if(item == null){
-       return [];
-   }else{
-       return JSON.parse(item);
-   }  
- }
 
  //fonction pour la gestion du panier en local storage
     function ItemPanier(productId, quantity, color){
-    if(!localStorage.getItem("item")){
-        localStorage.setItem("item",[]);
+    if(!localStorage.getObj("panier")){
+        localStorage.setObj("panier",[]);
     }
-    let panier= localStorage.getItem("item");
+    let panier= localStorage.getObj("panier");
 //vérifie l'id de l'url pour enregistré le bon produit avec le bonne id (Gerer la quantité)
     if(quantity=>1){
     let quantityColor= false
@@ -60,7 +51,7 @@ let cardsFetch = function () {
   }
     }
      }
-      localStorage.setItem("item",panier);
+      localStorage.setObj("panier",panier);
     }
 
     //envoie les différentes couleurs des canapés
