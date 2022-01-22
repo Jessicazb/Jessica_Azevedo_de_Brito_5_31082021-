@@ -29,27 +29,36 @@ let cardsFetch = function () {
 
  //fonction pour la gestion du panier en local storage
     function ItemPanier(productId, quantity, color){
+        console.log(productId,quantity,color);
         let panier = [];
-        if(!localStorage.getItem("panier")){
-            localStorage.setItem("panier", JSON.stringify(panier));
+        if(!localStorage.getObj("panier")){
+            localStorage.setObj("panier",panier);
         }else{
-            panier = localStorage.getItem("panier");
-            panier = JSON.parse(panier)
-        }
+            panier = localStorage.getObj("panier");
+        } 
+        quantity = parseInt(quantity);
         //vérifie l'id de l'url pour enregistré le bon produit avec le bon id et gerer sa quantité
-        if(quantity => 1){
-            let index = panier.findIndex(item => item.id == productId)
-            if(index > -1){
-                panier[index][[color]] = parseInt(quantity);  // convertir en nombre
-            }else{
-                panier.push({"id":productId, [color]: parseInt(quantity)});
+        console.log(color.length);
+        if(quantity > 0 && color.length > 0){
+            let exist = false;
+            for (let i=0;i<panier.length;i++){
+                if(panier[i].productId == productId && panier[i].color == color){
+                    panier[i].quantity += quantity;
+                    exist = true
+                }
             }
+             console.log(exist);
+               if (exist == false){
+                panier.push({"productId":productId, "color": color,"quantity":quantity});
+            }
+            localStorage.setObj("panier",panier); // enrengistrer la valeur récuperée
+            window.location = "./cart.html";
         }
-        console.log(panier);
-
-        localStorage.setItem("panier", JSON.stringify(panier)); // enrengistrer la valeur récuperée
+        else{
+            alert("Veulliez sesir une quantité valide et selectioner une couleur"); // à corriger
+        }
     }
-
+  
     //envoie les différentes couleurs des canapés
     if(product){  //renvoie true 
     for (let j=0; j<product.colors.length; j++){
@@ -59,7 +68,6 @@ let cardsFetch = function () {
       // buton au clic redirectionne à la pag panier 
        document.getElementById("addToCart").addEventListener("click", event=>{
         ItemPanier(product._id, document.getElementById("quantity").value, document.getElementById("colors").value);
-        window.location = "./cart.html"
     });
       
     }else{
