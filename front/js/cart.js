@@ -1,57 +1,63 @@
- //parametrage pour le local storage
- Storage.prototype.setObj = function(key, obj) {
-    return this.setItem(key, JSON.stringify(obj))
-  } 
-  Storage.prototype.getObj = function(key) {
-    return JSON.parse(this.getItem(key))
-  }
+    //parametrage pour le local storage
+    Storage.prototype.setObj = function(key, obj) {
+        return this.setItem(key, JSON.stringify(obj))
+    } 
+    Storage.prototype.getObj = function(key) {
+        return JSON.parse(this.getItem(key))
+    }
 
   let totalPrice = 0;
   let totalItem = 0;
-    // Envoie les produits dans le panier
-  for (let i=0; i<localStorage.getObj("panier").length; i++){
-    //recuperation id de la ligne panier
-   let productId = localStorage.getObj("panier")[i].productId; 
-   fetch("http://localhost:3000/api/products/"+productId)
+   //recuperation id de la ligne panier
+   fetch("http://localhost:3000/api/products")
    .then((response) => response.json())
-   .then((product) => {
-
-    console.log(product);
-
-    totalItem += parseInt(localStorage.getObj("panier")[i].quantity);
-    totalPrice += parseInt(localStorage.getObj("panier")[i].quantity) * product.price;
-    console.log(totalItem,totalPrice);
-
-    // Affichage des articles 
-    document.getElementById("cart__items").innerHTML+=
-    '<article class="cart__item" data-id='+localStorage.getObj("panier")[i].id+' data-color='+localStorage.getObj("panier")[i].color+'>'+
-    '<div class="cart__item__img">'+
-        '<img src='+product.imageUrl+' alt="Photographie d\'un canapé">'+
-    '</div>'+
-    '<div class="cart__item__content">'+
-        '<div class="cart__item__content__description">'+
-        '<h2>'+product.name+'</h2>'+
-        '<p> '+localStorage.getObj("panier")[i].color+' </p>'+
-        '<p> '+product.price+' €</p>'+
+   .then((products) => {
+    console.log(products);
+    for (let i=0; i<localStorage.getObj("panier").length; i++){
+    let product=false;
+      for (let j=0; j<products.length; j++){
+        if(localStorage.getObj("panier")[i] !== undefined && products[j]._id !== undefined){
+          if(products[j]._id == localStorage.getObj("panier")[i].productId){
+            product = products[j];
+          }
+        }
+      }
+    if(product !== false){
+        totalItem += parseInt(localStorage.getObj("panier")[i].quantity);
+        totalPrice += parseInt(localStorage.getObj("panier")[i].quantity) * product.price;
+        console.log(totalItem,totalPrice);
+    
+        // Affichage des articles 
+        document.getElementById("cart__items").innerHTML+=
+        '<article class="cart__item" data-id='+localStorage.getObj("panier")[i].productId+' data-color='+localStorage.getObj("panier")[i].color+'>'+
+        '<div class="cart__item__img">'+
+            '<img src='+product.imageUrl+' alt="Photographie d\'un canapé">'+
         '</div>'+
-        '<div class="cart__item__content__settings">'+
-        '<div class="cart__item__content__settings__quantity">'+
-            '<p>Qté : '+localStorage.getObj("panier")[i].quantity+' </p>'+
-            '<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="'+localStorage.getObj("panier")[i].quantity+'">'+
+        '<div class="cart__item__content">'+
+            '<div class="cart__item__content__description">'+
+            '<h2>'+product.name+'</h2>'+
+            '<p> '+localStorage.getObj("panier")[i].color+' </p>'+
+            '<p> '+product.price+' €</p>'+
+            '</div>'+
+            '<div class="cart__item__content__settings">'+
+            '<div class="cart__item__content__settings__quantity">'+
+                '<p>Qté : '+localStorage.getObj("panier")[i].quantity+' </p>'+
+                '<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="'+localStorage.getObj("panier")[i].quantity+'">'+
+            '</div>'+
+            '<div class="cart__item__content__settings__delete">'+
+                '<p class="deleteItem">Supprimer</p>'+
+            '</div>'+
+            '</div>'+
         '</div>'+
-        '<div class="cart__item__content__settings__delete">'+
-            '<p class="deleteItem">Supprimer</p>'+
-        '</div>'+
-        '</div>'+
-    '</div>'+
-    '</article>';
-   });
-}
+        '</article>';
+    }
+    }  
+   //renvoi la quantité total d'article
+   document.getElementById("totalQuantity").innerHTML = totalItem;
+   //renvoi le prix total
+     document.getElementById("totalPrice").innerHTML = totalPrice;
+    });
 
- //renvoi la quantité total d'article
-  document.getElementById("totalQuantity").innerHTML = totalItem;
-  //renvoi le prix total
-    document.getElementById("totalPrice").innerHTML = totalPrice;
 /*
    
   // suppression d'un article du panier 
@@ -62,7 +68,7 @@ function removeItem(product){
 });
 }
 // Changement de quantité d'un élément 
-function quantity (product,quantity){
+function changeQuantity (product,quantity,color){
   let changeQuantity = getObj("panier"); // a voir
   let foundProduct = item.find(prod => prod.id == product.id);
     if (foundProduct != undefined){
