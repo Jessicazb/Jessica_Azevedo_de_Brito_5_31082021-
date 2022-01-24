@@ -7,11 +7,11 @@
   }
   
   //gestion de l'url
-  let queryString = window.location.search;
-  let urlParams = new URLSearchParams(queryString);
-  let productId = urlParams.get('id');
+   let queryString = window.location.search;
+   let urlParams = new URLSearchParams(queryString);
+   let productId = urlParams.get('id');
 
-let cardsFetch = function () {
+    let cardsFetch = function () {
     fetch("http://localhost:3000/api/products/"+productId)
     .then((response) => response.json())
     .then((product) => {
@@ -27,9 +27,8 @@ let cardsFetch = function () {
     document.getElementById("description").innerHTML = product.description;
     
 
- //fonction pour la gestion du panier en local storage
+    //fonction pour la gestion du panier en local storage
     function ItemPanier(productId, quantity, color){
-        console.log(productId,quantity,color);
         let panier = [];
         if(!localStorage.getObj("panier")){
             localStorage.setObj("panier",panier);
@@ -38,7 +37,6 @@ let cardsFetch = function () {
         } 
         quantity = parseInt(quantity);
         //vérifie l'id de l'url pour enregistré le bon produit avec le bon id et gerer sa quantité
-        console.log(color.length);
         if(quantity > 0 && color.length > 0){
             let exist = false;
             for (let i=0;i<panier.length;i++){
@@ -47,9 +45,9 @@ let cardsFetch = function () {
                     exist = true
                 }
             }
-             console.log(exist);
-               if (exist == false){
-                panier.push({"productId":productId, "color": color,"quantity":quantity});
+         // gestion de la quantité et de quantités de coulors des articles 
+            if (exist == false){
+            panier.push({"productId":productId, "color": color,"quantity":quantity});
             }
             localStorage.setObj("panier",panier); // enrengistrer la valeur récuperée
             window.location = "./cart.html";
@@ -60,7 +58,7 @@ let cardsFetch = function () {
     }
   
     //envoie les différentes couleurs des canapés
-    if(product){  //renvoie true 
+    if(product){  
     for (let j=0; j<product.colors.length; j++){
         document.getElementById("colors").innerHTML+=
         '<option value="'+product.colors[j]+'">'+product.colors[j]+'</option>';
