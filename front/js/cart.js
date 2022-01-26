@@ -94,6 +94,7 @@ fetch("http://localhost:3000/api/products")
         changeQuantity += parseInt(localStorage.getObj("panier")[k].quantity);
       });
     }
+
     // validation formulaire 
 
     const button = document.getElementById("order")
@@ -105,108 +106,98 @@ fetch("http://localhost:3000/api/products")
       let address = document.getElementById("address");
       let city = document.getElementById("city");
       let email = document.getElementById("email");
-
+  
       // function prénom
-      const validateFirstName = (event) => {
-        let input = event.currentTarget;
+      function validateFirstName (firstName) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let nomTest = regex.test(input.value);
+        let nomTest = regex.test(firstName);
 
         if (!nomTest) {
           button.setAttribute("false", "false");
-          input.document.getElementById("firstNameErrorMsg");
-          return false;
         } else {
           button.removeAttribute("false");
-          input.document.getElementById.remove("firstNameErrorMsg");
-          return true;
+          document.getElementById("firstNameErrorMsg").innerText="";
         }
+        return nomTest;
       }
       // function nom 
-      const validateLastName = (event) => {
-        let input = event.currentTarget;
+      function validateLastName (lastName) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let nomTest = regex.test(input.value);
+        let nomTest = regex.test(lastName);
 
         if (!nomTest) {
           button.setAttribute("false", "false");
-          input.document.getElementById("lastNameErrorMsg");
-          return false;
         } else {
           button.removeAttribute("false");
-          input.document.getElementById.remove("lastNameErrorMsg");
-          return true;
+          document.getElementById("lastNameErrorMsg").innerText=""; 
         }
+        return nomTest;
       }
       // function adresse
-      const validateAddress = (event) => {
-        let input = event.currentTarget;
+      function validateAddress (address) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let addressTest = regex.test(input.value);
+        let addressTest = regex.test(address);
 
         if (!addressTest) {
           button.setAttribute("false", "false");
-          input.document.getElementById("addressErrorMsg");
-          return false;
         } else {
           button.removeAttribute("false");
-          input.document.getElementById.remove("addressErrorMsg");
-          return true;
+          document.getElementById("addressErrorMsg").innerText="";
         }
+        return addressTest;
       }
       // function ville
-      const validateCity = (event) => {
-        let input = event.currentTarget;
+      function validateCity (city) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let villeTest = regex.test(input.value);
-
+        let villeTest = regex.test(city);
         if (!villeTest) {
           button.setAttribute("false", "false");
-          input.document.getElementById("cityErrorMsg");
-          return false;
         } else {
           button.removeAttribute("false");
-          input.document.getElementById.remove("cityErrorMsg");
-          return true;
+          document.getElementById.remove("cityErrorMsg").innerText="";
         }
+        return villeTest;
       }
       // function mail 
-      const validateEmail = (event) => {
-        let input = event.currentTarget;
+      function validateEmail (email) {
+        console.log(event);
         let regexMail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        let mailTest = regexMail.test(input.value);
-
+        let mailTest = regexMail.test(email);
+        console.log(mailTest);
         if (!mailTest) {
           button.setAttribute("false", "false");
-          input.document.getElementById("emailErrorMsg");
-          return false;
         } else {
           button.removeAttribute("false");
-          input.document.getElementById.remove("emailErrorMsg");
-          return true;
+          document.getElementById("emailErrorMsg").innerText ="";
         }
+        return mailTest;
       }
+      
       // function pour envoyer message d'erreur si champs n'est pas valide 
       function errorHandler(email, firstName, lastName, address, city) {
-        if (validateEmail(email) == false) {
-          emailErrorMsg.innerHTML = "Entrez une adresse e-mail valide.";
+        if (!validateEmail(email)) {
+          document.getElementById("emailErrorMsg").innerText = "Veuillez saisir une adresse e-mail valide.";
         }
-        if (validateFirstName(firstName) == false) {
-          firstNameErrorMsg.innerHTML = "Entrez un prénom valide sans chiffre.";
+        if (!validateFirstName(firstName)) {
+          document.getElementById("firstNameErrorMsg").innerHTML = "Veuillez saisir un prénom valide sans chiffre.";
         }
-        if (validateLastName(lastName) == false) {
-          lastNameErrorMsg.innerHTML = "Entrez un nom valide sans chiffre.";
+        if (!validateLastName(lastName)) {
+          document.getElementById("lastNameErrorMsg").innerHTML = "Veuillez saisir un nom valide sans chiffre.";
         }
-        if (validateCity(city) == false) {
-          cityErrorMsg.innerHTML = "Entrez une commune valide sans chiffre.";
+        if (!validateCity(city)) {
+          document.getElementById("cityErrorMsg").innerHTML = "Veuillez saisir une commune valide sans chiffre.";
         }
-        if (validateAddress(address) == false) {
-          addressErrorMsg.innerHTML = "Entrez un adresse valide.";
-        }
+        if (!validateAddress(address)) {
+          document.getElementById("addressErrorMsg").innerHTML = "Veuillez saisir un adresse valide.";
+        } 
       }
+      errorHandler(email, firstName, lastName, address, city);
+
       if (validateEmail(email) == true && validateFirstName(firstName) == true && validateLastName(lastName) == true
         && validateCity(city) == true && validateAddress(address) == true) {
         // si tout est valide soumettre résultat
+        localStorage.setObj("panier", panier); 
+        // gestion API
         fetch("http://localhost:3000/api/products/order"), {
           method: 'POST',
           headers: {
@@ -220,8 +211,8 @@ fetch("http://localhost:3000/api/products")
             address: address.value,
           })
         }.then((response) => {
-          if (response.status !== 3000) {
-            return errorHandler();
+          if (response.status !== 200) {   
+            return false;
           } else {
             window.location = "../html/confirmation.html?orderId=" + order.orderId
           }
