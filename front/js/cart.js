@@ -8,11 +8,12 @@ Storage.prototype.getObj = function (key) {
 
 let totalPrice = 0;
 let totalItem = 0;
-//recuperation id de la ligne panier
+//recuperation des données API
 fetch("http://localhost:3000/api/products")
   .then((response) => response.json())
   .then((products) => {
     console.log(products);
+    // envoi des produits dans le panier 
     for (let i = 0; i < localStorage.getObj("panier").length; i++) {
       let product = false;
       for (let j = 0; j < products.length; j++) {
@@ -22,12 +23,18 @@ fetch("http://localhost:3000/api/products")
           }
         }
       }
+      // calcul du prix total et de la quantité totale 
       if (product !== false) {
         totalItem += parseInt(localStorage.getObj("panier")[i].quantity);
         totalPrice += parseInt(localStorage.getObj("panier")[i].quantity) * product.price;
         console.log(totalItem, totalPrice);
 
-        // Affichage des articles 
+        //renvoi la quantité total d'article
+        document.getElementById("totalQuantity").innerHTML = totalItem;
+        //renvoi le prix total
+        document.getElementById("totalPrice").innerHTML = totalPrice;
+
+        // Affichage des articles dans le panier 
         document.getElementById("cart__items").innerHTML +=
           '<article class="cart__item" data-id=' + localStorage.getObj("panier")[i].productId + ' data-color=' + localStorage.getObj("panier")[i].color + '>' +
           '<div class="cart__item__img">' +
@@ -52,10 +59,6 @@ fetch("http://localhost:3000/api/products")
           '</article>';
       }
     }
-    //renvoi la quantité total d'article
-    document.getElementById("totalQuantity").innerHTML = totalItem;
-    //renvoi le prix total
-    document.getElementById("totalPrice").innerHTML = totalPrice;
 
     // function pour supprimer un artcile du panier 
     function removeItem(productId, color) {
@@ -79,7 +82,7 @@ fetch("http://localhost:3000/api/products")
     // function pour changer la quantité d'un élément 
     function changeQuantity(productId, color, quantity) {
       let change = localStorage.getObj("panier");
-      for (let k = 0; k < itemQuantity.length; k++) {
+      for (let k = 0; k < change.length; k++) {
         if (change[k].productId == productId && change[k].color == color) {
           change[k].quantity = quantity
           localStorage.setObj("panier", change);
@@ -90,87 +93,74 @@ fetch("http://localhost:3000/api/products")
     // changement de la quantité d'un élément
     let itemQuantity = document.getElementsByClassName("itemQuantity");
     for (let l = 0; l < itemQuantity.length; l++) {
-      deleteItem[l].addEventListener("click", function (testQuantity) {
-        changeQuantity += parseInt(localStorage.getObj("panier")[k].quantity);
+       itemQuantity[l].addEventListener("click", function (testQuantity) {
+        changeQuantity(testQuantity.target.parentNode.parentNode.parentNode.parentNode.dataset.id,testQuantity.target.parentNode.parentNode.parentNode.parentNode.dataset.color,testQuantity.target.value);
       });
     }
-
+   
     // validation formulaire 
 
     const button = document.getElementById("order")
     button.addEventListener("click", (event) => {
       event.preventDefault();
 
-      let firstName = document.getElementById("firstName");
-      let lastName = document.getElementById("lastName");
-      let address = document.getElementById("address");
-      let city = document.getElementById("city");
-      let email = document.getElementById("email");
+      let firstName = document.getElementById("firstName").value;
+      let lastName = document.getElementById("lastName").value;
+      let address = document.getElementById("address").value;
+      let city = document.getElementById("city").value;
+      let email = document.getElementById("email").value;
   
       // function prénom
-      function validateFirstName (firstName) {
+      function validateFirstName(firstName) {
+        // objet regex pour tester la chaîne de caractères 
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let nomTest = regex.test(firstName);
-
-        if (!nomTest) {
-          button.setAttribute("false", "false");
+        if (regex.test(firstName)== false) {
+          return false;
         } else {
-          button.removeAttribute("false");
           document.getElementById("firstNameErrorMsg").innerText="";
+          return true;
         }
-        return nomTest;
       }
       // function nom 
-      function validateLastName (lastName) {
+      function validateLastName(lastName) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let nomTest = regex.test(lastName);
-
-        if (!nomTest) {
-          button.setAttribute("false", "false");
+        if (regex.test(lastName)== false) {
+        return false;
         } else {
-          button.removeAttribute("false");
           document.getElementById("lastNameErrorMsg").innerText=""; 
+          return true;
         }
-        return nomTest;
       }
       // function adresse
       function validateAddress (address) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let addressTest = regex.test(address);
-
-        if (!addressTest) {
-          button.setAttribute("false", "false");
+       if (regex.test(address)== false){
+          return false;
         } else {
-          button.removeAttribute("false");
           document.getElementById("addressErrorMsg").innerText="";
+          return true;
         }
-        return addressTest;
       }
       // function ville
       function validateCity (city) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        let villeTest = regex.test(city);
-        if (!villeTest) {
-          button.setAttribute("false", "false");
+        if (regex.test(city)== false) {
+          return false;
         } else {
-          button.removeAttribute("false");
-          document.getElementById.remove("cityErrorMsg").innerText="";
+          document.getElementById("cityErrorMsg").innerText="";
+          return true;
         }
-        return villeTest;
       }
       // function mail 
       function validateEmail (email) {
-        console.log(event);
         let regexMail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        let mailTest = regexMail.test(email);
-        console.log(mailTest);
-        if (!mailTest) {
-          button.setAttribute("false", "false");
+        if (regexMail.test(email)== false){
+           return false;
         } else {
-          button.removeAttribute("false");
           document.getElementById("emailErrorMsg").innerText ="";
+          return true;
         }
-        return mailTest;
+        
       }
       
       // function pour envoyer message d'erreur si champs n'est pas valide 
@@ -192,34 +182,39 @@ fetch("http://localhost:3000/api/products")
         } 
       }
       errorHandler(email, firstName, lastName, address, city);
-
+      
       if (validateEmail(email) == true && validateFirstName(firstName) == true && validateLastName(lastName) == true
         && validateCity(city) == true && validateAddress(address) == true) {
         // si tout est valide soumettre résultat
-        localStorage.setObj("panier", panier); 
-        // gestion API
-        fetch("http://localhost:3000/api/products/order"), {
-          method: 'POST',
+        let contact = {
+          firstName: firstName,
+          lastName: lastName,
+          address: address,
+          city: city,
+          email: email,
+        }
+      let productsApi = [];
+        for (m = 0; m<localStorage.getObj("panier").length; m++){
+          productsApi.push(localStorage.getObj("panier")[m].productId);
+        }
+         // envoi des données à l'API
+         fetch(("http://localhost:3000/api/products/order"), {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            email: email.value,
-            lastName: lastName.value,
-            firstName: firstName.value,
-            city: city.value,
-            address: address.value,
-          })
-        }.then((response) => {
-          if (response.status !== 200) {   
-            return false;
-          } else {
-            window.location = "../html/confirmation.html?orderId=" + order.orderId
-          }
-        }).catch(() => {
-          errorHandler();
+          body: JSON.stringify({contact:contact,products:productsApi})
+        })
+        .then((res) => res.json())
+        .then((order) => {
+          //enleve les produits du panier
+          localStorage.clear();
+          //renvoi a la page confirmation
+         window.location = "../html/confirmation.html?orderId="+order.orderId
+        })
+        .catch(function(error) {
+          console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
         });
       }
     });
-    window.onload = button;
   });

@@ -49,7 +49,8 @@ let cardsFetch = function () {
                     if (exist == false) {
                         panier.push({ "productId": productId, "color": color, "quantity": quantity });
                     }
-                    localStorage.setObj("panier", panier); // enrengistrer la valeur récuperée
+                    // enrengistrement de la valeur récuperée dans le localStorage
+                    localStorage.setObj("panier", panier); 
                     window.location = "./cart.html";
                 }
                 else {
