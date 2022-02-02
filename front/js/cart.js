@@ -79,13 +79,18 @@ fetch("http://localhost:3000/api/products")
 
     // function pour changer la quantité d'un élément 
     function changeQuantity(productId, color, quantity) {
-      let change = localStorage.getObj("panier");
-      for (let k = 0; k < change.length; k++) {
-        if (change[k].productId == productId && change[k].color == color) {
-          change[k].quantity = quantity
-          localStorage.setObj("panier", change);
-          window.location.reload();
+      if (quantity > 1) {
+        let change = localStorage.getObj("panier");
+        for (let k = 0; k < change.length; k++) {
+          if (change[k].productId == productId && change[k].color == color) {
+            change[k].quantity = quantity
+            localStorage.setObj("panier", change);
+            window.location.reload();
+          }
         }
+      }
+      else{
+        alert("Veuillez saisir une quantité valide.")
       }
     }
     // changement de la quantité d'un élément

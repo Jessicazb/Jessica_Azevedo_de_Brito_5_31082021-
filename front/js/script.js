@@ -3,8 +3,6 @@ let cardsFetch = function () {
       .then((response) => response.json())
       .then((products) => {
   
-        console.log(products);
-  
       // Boucle d'envoi des produits en html
       for (let i=0; i<products.length; i++){
         document.getElementById("items").innerHTML+=
