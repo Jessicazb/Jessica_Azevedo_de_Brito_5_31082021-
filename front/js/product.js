@@ -11,13 +11,13 @@ let queryString = window.location.search;
 let urlParams = new URLSearchParams(queryString);
 let productId = urlParams.get('id');
 
+
 let cardsFetch = function () {
     fetch("http://localhost:3000/api/products/" + productId)
         .then((response) => response.json())
         .then((product) => {
 
             console.log(product);
-
 
             // ajout des cards sur la page produit 
             document.getElementsByClassName("item__img")[0].innerHTML =
@@ -50,11 +50,12 @@ let cardsFetch = function () {
                         panier.push({ "productId": productId, "color": color, "quantity": quantity });
                     }
                     // enrengistrement de la valeur récuperée dans le localStorage
-                    localStorage.setObj("panier", panier); 
+                    localStorage.setObj("panier", panier);
                     window.location = "./cart.html";
                 }
+                // condition si la couleur et la quantité ne sont pas saisies 
                 else {
-                    alert("Veuillez saisir une quantité valide et selectioner une couleur"); // à corriger
+                    alert("Veuillez saisir une quantité valide et selectioner une couleur");
                 }
             }
 

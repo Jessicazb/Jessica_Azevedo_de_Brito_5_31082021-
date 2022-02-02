@@ -12,7 +12,6 @@ let totalItem = 0;
 fetch("http://localhost:3000/api/products")
   .then((response) => response.json())
   .then((products) => {
-    console.log(products);
     // envoi des produits dans le panier 
     for (let i = 0; i < localStorage.getObj("panier").length; i++) {
       let product = false;
@@ -27,7 +26,6 @@ fetch("http://localhost:3000/api/products")
       if (product !== false) {
         totalItem += parseInt(localStorage.getObj("panier")[i].quantity);
         totalPrice += parseInt(localStorage.getObj("panier")[i].quantity) * product.price;
-        console.log(totalItem, totalPrice);
 
         //renvoi la quantité total d'article
         document.getElementById("totalQuantity").innerHTML = totalItem;
@@ -93,13 +91,11 @@ fetch("http://localhost:3000/api/products")
     // changement de la quantité d'un élément
     let itemQuantity = document.getElementsByClassName("itemQuantity");
     for (let l = 0; l < itemQuantity.length; l++) {
-       itemQuantity[l].addEventListener("click", function (testQuantity) {
-        changeQuantity(testQuantity.target.parentNode.parentNode.parentNode.parentNode.dataset.id,testQuantity.target.parentNode.parentNode.parentNode.parentNode.dataset.color,testQuantity.target.value);
+      itemQuantity[l].addEventListener("click", function (testQuantity) {
+        changeQuantity(testQuantity.target.parentNode.parentNode.parentNode.parentNode.dataset.id, testQuantity.target.parentNode.parentNode.parentNode.parentNode.dataset.color, testQuantity.target.value);
       });
     }
-   
     // validation formulaire 
-
     const button = document.getElementById("order")
     button.addEventListener("click", (event) => {
       event.preventDefault();
@@ -109,60 +105,59 @@ fetch("http://localhost:3000/api/products")
       let address = document.getElementById("address").value;
       let city = document.getElementById("city").value;
       let email = document.getElementById("email").value;
-  
+
       // function prénom
       function validateFirstName(firstName) {
         // objet regex pour tester la chaîne de caractères 
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        if (regex.test(firstName)== false) {
+        if (regex.test(firstName) == false || firstName == "") {
           return false;
         } else {
-          document.getElementById("firstNameErrorMsg").innerText="";
+          document.getElementById("firstNameErrorMsg").innerText = "";
           return true;
         }
       }
       // function nom 
       function validateLastName(lastName) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        if (regex.test(lastName)== false) {
-        return false;
+        if (regex.test(lastName) == false || lastName == "") {
+          return false;
         } else {
-          document.getElementById("lastNameErrorMsg").innerText=""; 
+          document.getElementById("lastNameErrorMsg").innerText = "";
           return true;
         }
       }
       // function adresse
-      function validateAddress (address) {
+      function validateAddress(address) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-       if (regex.test(address)== false){
+        if (regex.test(address) == false || address == "") {
           return false;
         } else {
-          document.getElementById("addressErrorMsg").innerText="";
+          document.getElementById("addressErrorMsg").innerText = "";
           return true;
         }
       }
       // function ville
-      function validateCity (city) {
+      function validateCity(city) {
         let regex = /^[a-z][a-z '-.,]{1,31}$|^$/i;
-        if (regex.test(city)== false) {
+        if (regex.test(city) == false || city == "") {
           return false;
         } else {
-          document.getElementById("cityErrorMsg").innerText="";
+          document.getElementById("cityErrorMsg").innerText = "";
           return true;
         }
       }
       // function mail 
-      function validateEmail (email) {
+      function validateEmail(email) {
         let regexMail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (regexMail.test(email)== false){
-           return false;
+        if (regexMail.test(email) == false) {
+          return false;
         } else {
-          document.getElementById("emailErrorMsg").innerText ="";
+          document.getElementById("emailErrorMsg").innerText = "";
           return true;
         }
-        
+
       }
-      
       // function pour envoyer message d'erreur si champs n'est pas valide 
       function errorHandler(email, firstName, lastName, address, city) {
         if (!validateEmail(email)) {
@@ -179,10 +174,10 @@ fetch("http://localhost:3000/api/products")
         }
         if (!validateAddress(address)) {
           document.getElementById("addressErrorMsg").innerHTML = "Veuillez saisir un adresse valide.";
-        } 
+        }
       }
       errorHandler(email, firstName, lastName, address, city);
-      
+
       if (validateEmail(email) == true && validateFirstName(firstName) == true && validateLastName(lastName) == true
         && validateCity(city) == true && validateAddress(address) == true) {
         // si tout est valide soumettre résultat
@@ -193,28 +188,28 @@ fetch("http://localhost:3000/api/products")
           city: city,
           email: email,
         }
-      let productsApi = [];
-        for (m = 0; m<localStorage.getObj("panier").length; m++){
+        let productsApi = [];
+        for (m = 0; m < localStorage.getObj("panier").length; m++) {
           productsApi.push(localStorage.getObj("panier")[m].productId);
         }
-         // envoi des données à l'API
-         fetch(("http://localhost:3000/api/products/order"), {
+        // envoi des données à l'API
+        fetch(("http://localhost:3000/api/products/order"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({contact:contact,products:productsApi})
+          body: JSON.stringify({ contact: contact, products: productsApi })
         })
-        .then((res) => res.json())
-        .then((order) => {
-          //enleve les produits du panier
-          localStorage.clear();
-          //renvoi a la page confirmation
-         window.location = "../html/confirmation.html?orderId="+order.orderId
-        })
-        .catch(function(error) {
-          console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
-        });
+          .then((res) => res.json())
+          .then((order) => {
+            //enleve les produits du panier
+            localStorage.clear();
+            //renvoi a la page confirmation
+            window.location = "../html/confirmation.html?orderId=" + order.orderId
+          })
+          .catch(function (error) {
+            console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
+          });
       }
     });
   });
