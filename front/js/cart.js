@@ -79,7 +79,7 @@ fetch("http://localhost:3000/api/products")
 
     // function pour changer la quantité d'un élément 
     function changeQuantity(productId, color, quantity) {
-      if (quantity > 1) {
+      if (quantity > 0) {
         let change = localStorage.getObj("panier");
         for (let k = 0; k < change.length; k++) {
           if (change[k].productId == productId && change[k].color == color) {
@@ -88,9 +88,6 @@ fetch("http://localhost:3000/api/products")
             window.location.reload();
           }
         }
-      }
-      else{
-        alert("Veuillez saisir une quantité valide.")
       }
     }
     // changement de la quantité d'un élément

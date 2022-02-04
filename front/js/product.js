@@ -45,7 +45,7 @@ let cardsFetch = function () {
                             exist = true
                         }
                     }
-                    // gestion de la quantité et de quantités de coulors des articles 
+                    // gestion de l'envoi des articles dans le panier
                     if (exist == false) {
                         panier.push({ "productId": productId, "color": color, "quantity": quantity });
                     }
