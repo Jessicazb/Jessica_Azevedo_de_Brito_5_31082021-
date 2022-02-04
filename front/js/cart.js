@@ -36,7 +36,7 @@ fetch("http://localhost:3000/api/products")
         document.getElementById("cart__items").innerHTML +=
           '<article class="cart__item" data-id=' + localStorage.getObj("panier")[i].productId + ' data-color=' + localStorage.getObj("panier")[i].color + '>' +
           '<div class="cart__item__img">' +
-          '<img src=' + product.imageUrl + ' alt="Photographie d\'un canapé">' +
+          '<img src='+product.imageUrl+' alt='+product.altTxt+'>'+ // correction soutenance 
           '</div>' +
           '<div class="cart__item__content">' +
           '<div class="cart__item__content__description">' +
@@ -57,7 +57,21 @@ fetch("http://localhost:3000/api/products")
           '</article>';
       }
     }
-
+    // function si le panier est vide
+    function panierVide() {
+      if (
+        localStorage.getObj("panier") == null ||
+        localStorage.getObj("panier") == 0
+      ) {
+        alert("Votre panier est vide!")
+        return true;
+      } else {
+        return false;
+      }
+    }
+    if(panierVide() == false){
+     
+    
     // function pour supprimer un artcile du panier 
     function removeItem(productId, color) {
       let deleteItemPanier = localStorage.getObj("panier");
@@ -214,4 +228,6 @@ fetch("http://localhost:3000/api/products")
           });
       }
     });
+  }; // panier vide
   });
+

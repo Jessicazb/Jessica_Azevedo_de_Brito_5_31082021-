@@ -21,7 +21,7 @@ let cardsFetch = function () {
 
             // ajout des cards sur la page produit 
             document.getElementsByClassName("item__img")[0].innerHTML =
-                '<img src="' + product.imageUrl + '" alt="Photographie d\'un canapé">';
+            '<img src="'+product.imageUrl+'" alt='+product.altTxt+'>'; //corection soutenance
             document.getElementById("title").innerHTML = product.name;
             document.getElementById("price").innerHTML = product.price;
             document.getElementById("description").innerHTML = product.description;
@@ -45,6 +45,7 @@ let cardsFetch = function () {
                             exist = true
                         }
                     }
+
                     // gestion de l'envoi des articles dans le panier
                     if (exist == false) {
                         panier.push({ "productId": productId, "color": color, "quantity": quantity });
