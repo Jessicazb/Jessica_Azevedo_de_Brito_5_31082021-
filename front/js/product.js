@@ -64,7 +64,7 @@ let cardsFetch = function () {
             if (product) {
                 for (let j = 0; j < product.colors.length; j++) {
                     document.getElementById("colors").innerHTML +=
-                        '<option value="' + product.colors[j] + '">' + product.colors[j] + '</option>';
+                        `<option value="${product.colors[j]}"> ${product.colors[j]}</option>`;
                 }
                 // buton au clic redirectionne à la pag panier 
                 document.getElementById("addToCart").addEventListener("click", event => {
