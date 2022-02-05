@@ -21,7 +21,7 @@ let cardsFetch = function () {
 
             // ajout des cards sur la page produit 
             document.getElementsByClassName("item__img")[0].innerHTML =
-            `<img src="${product.imageUrl}" alt="${product.altTxt}">`; //corection soutenance
+                `<img src="${product.imageUrl}" alt="${product.altTxt}">`; 
             document.getElementById("title").innerHTML = product.name;
             document.getElementById("price").innerHTML = product.price;
             document.getElementById("description").innerHTML = product.description;
