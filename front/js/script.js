@@ -6,13 +6,13 @@ let cardsFetch = function () {
       // Boucle d'envoi des produits en html
       for (let i=0; i<products.length; i++){
         document.getElementById("items").innerHTML+=
-        '<a href="./product.html?id='+products[i]._id+'">'+
-          '<article>'+
-            '<img src="'+products[i].imageUrl+'" alt="'+products[i].altTxt+'">'+ // correction soutenance
-            '<h3 class="productName">'+products[i].name+'</h3>'+
-            '<p class="productDescription">'+products[i].description+'</p>'+
-          '</article>'+
-        '</a>';
+        `<a href="./product.html?id=${products[i]._id}">
+          <article>
+            <img src="${products[i].imageUrl}" alt="${products[i].altTxt}"> 
+            <h3 class="productName">${products[i].name}</h3>
+            <p class="productDescription">${products[i].description}</p>
+          </article>
+        </a>`;
         };
       });
   };
